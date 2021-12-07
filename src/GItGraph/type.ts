@@ -1,19 +1,18 @@
-export as namespace GG
-export declare type GitRepoSet = {
+export type GitRepoSet = {
   [repo: string]: GitRepoState;
 };
-export declare enum RepoCommitOrdering {
+export enum RepoCommitOrdering {
   Default = 'default',
   Date = 'date',
   AuthorDate = 'author-date',
   Topological = 'topo'
 }
-export declare enum FileViewType {
+export enum FileViewType {
   Default = 0,
   Tree = 1,
   List = 2
 }
-export declare enum BooleanOverride {
+export enum BooleanOverride {
   Default = 0,
   Enabled = 1,
   Disabled = 2
@@ -22,7 +21,7 @@ export interface IssueLinkingConfig {
   readonly issue: string;
   readonly url: string;
 }
-export declare enum PullRequestProvider {
+export enum PullRequestProvider {
   Bitbucket = 0,
   Custom = 1,
   GitHub = 2,
@@ -66,7 +65,7 @@ export interface GitRepoState {
   workspaceFolderIndex: number | null;
 }
 
-export declare enum RepoDropdownOrder {
+export enum RepoDropdownOrder {
   FullPath = 0,
   Name = 1,
   WorkspaceFullPath = 2
@@ -76,18 +75,18 @@ export interface DateFormat {
   readonly type: DateFormatType;
   readonly iso: boolean;
 }
-export declare enum DateFormatType {
+export enum DateFormatType {
   DateAndTime = 0,
   DateOnly = 1,
   Relative = 2
 }
 
-export declare enum GraphStyle {
+export enum GraphStyle {
   Rounded = 0,
   Angular = 1
 }
 
-export declare enum GraphUncommittedChangesStyle {
+export enum GraphUncommittedChangesStyle {
   OpenCircleAtTheUncommittedChanges = 0,
   OpenCircleAtTheCheckedOutCommit = 1
 }
@@ -136,7 +135,7 @@ export interface GitCommit {
   readonly stash: GitCommitStash | null;
 }
 
-export declare const enum GitSignatureStatus {
+export const enum GitSignatureStatus {
   GoodAndValid = 'G',
   GoodWithUnknownValidity = 'U',
   GoodButExpired = 'X',
@@ -150,7 +149,7 @@ export interface GitSignature {
   readonly signer: string;
   readonly status: GitSignatureStatus;
 }
-export declare const enum GitFileStatus {
+export const enum GitFileStatus {
   Added = 'A',
   Modified = 'M',
   Deleted = 'D',

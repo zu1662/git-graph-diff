@@ -1,8 +1,7 @@
 import {escapeHtml,SVG_NAMESPACE, UNCOMMITTED,ELLIPSIS,abbrevCommit, getBranchLabels } from './utils'
-import GG from './type'
 const CLASS_GRAPH_VERTEX_ACTIVE = 'graphVertexActive';
 const NULL_VERTEX_ID = -1;
-
+import * as GG from './type'
 
 /* Types */
 
