@@ -91,10 +91,10 @@ export const CLASS_TRANSITION = 'transition';
 
 export const ID_EVENT_CAPTURE_ELEM = 'eventCaptureElem';
 
-export const CSS_PROP_FONT_FAMILY = '--vscode-font-family';
-export const CSS_PROP_EDITOR_FONT_FAMILY = '--vscode-editor-font-family';
-export const CSS_PROP_FIND_MATCH_HIGHLIGHT_BACKGROUND = '--vscode-editor-findMatchHighlightBackground';
-export const CSS_PROP_SELECTION_BACKGROUND = '--vscode-selection-background';
+export const CSS_PROP_FONT_FAMILY = '--base-font-family';
+export const CSS_PROP_EDITOR_FONT_FAMILY = '--base-editor-font-family';
+export const CSS_PROP_FIND_MATCH_HIGHLIGHT_BACKGROUND = '--base-editor-findMatchHighlightBackground';
+export const CSS_PROP_SELECTION_BACKGROUND = '--base-background';
 
 export const ATTR_ERROR = 'data-error';
 

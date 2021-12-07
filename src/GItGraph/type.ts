@@ -215,3 +215,13 @@ export interface ExpandedCommit {
     fileView: number
   };
 }
+
+export interface IssueLinkingConfig {
+  readonly issue: string;
+  readonly url: string;
+}
+
+export interface CustomEmojiShortcodeMapping {
+  readonly shortcode: string;
+  readonly emoji: string;
+}

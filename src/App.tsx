@@ -3,7 +3,6 @@ import GitGraph from './GItGraph'
 function App() {
   return (
     <div className="App">
-      Hello World
       <GitGraph></GitGraph>
     </div>
   )
