@@ -565,10 +565,10 @@ code{
 .fileTreeFileAction.viewGitFileAtRevision, .fileTreeFileAction.openGitFile{
 	margin-left:6px;
 }
-.fileTreeFileRecord:hover .fileTreeFileAction, .fileTreeFileRecord.contextMenuActive .fileTreeFileAction, .fileTreeFileRecord.dialogActive .fileTreeFileAction{
+/* .fileTreeFileRecord:hover .fileTreeFileAction, .fileTreeFileRecord.contextMenuActive .fileTreeFileAction, .fileTreeFileRecord.dialogActive .fileTreeFileAction{
 	cursor:pointer;
 	opacity:1;
-}
+} */
 svg.openFolderIcon, svg.closedFolderIcon, svg.fileIcon, .fileTreeFileAction svg, #cdvLastFileViewed svg{
 	position:absolute;
 	top:2.5px;
@@ -598,7 +598,7 @@ svg.openFolderIcon, svg.closedFolderIcon, svg.fileIcon{
 	color:var(--base-foreground);
 }
 .fileTreeFile .gitFileName.A, .fileTreeFile .gitFileName.U{
-	color:var(--base-background);
+	color:var(--base-gitDecoration-addedResourceForeground);
 }
 .fileTreeFile .gitFileName.D{
 	color:var(--base-gitDecoration-deletedResourceForeground);
@@ -617,7 +617,7 @@ svg.openFolderIcon, svg.closedFolderIcon, svg.fileIcon{
 	cursor:help;
 }
 .fileTreeFileAdd{
-	color:var(--base-background);
+	color:var(--base-gitDecoration-addedResourceForeground);
 }
 .fileTreeFileDel{
 	color:var(--base-gitDecoration-deletedResourceForeground);

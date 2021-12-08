@@ -18,6 +18,7 @@ body {
   --base-textLink-activeForeground: #3794ff;
   --base-focusBorder: #3e4452;
   --base-gitDecoration-deletedResourceForeground: #c74e39;
+  --base-gitDecoration-addedResourceForeground: #81b88b;
 }
 
 

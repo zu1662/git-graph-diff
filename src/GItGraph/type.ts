@@ -178,15 +178,6 @@ export interface GitCommitDetails {
 }
 
 
-export interface FileTreeFolder {
-  readonly type: 'folder';
-  readonly name: string;
-  readonly folderPath: string;
-  readonly contents: any;
-  open: boolean;
-  reviewed: boolean;
-}
-
 export interface CodeReview {
   id: string;
   lastActive: number;
@@ -197,14 +188,14 @@ export interface ExpandedCommit {
   index: number;
   commitHash: string;
   commitElem: HTMLElement | null;
-  compareWithHash: string | null;
-  compareWithElem: HTMLElement | null;
+  compareWithHash?: string | null;
+  compareWithElem?: HTMLElement | null;
   commitDetails: GitCommitDetails | null;
   fileChanges: ReadonlyArray<GitFileChange> | null;
   fileTree: FileTreeFolder | null;
   avatar: string | null;
   codeReview: CodeReview | null;
-  lastViewedFile: string | null;
+  lastViewedFile?: string | null;
   loading: boolean;
   scrollTop: {
     summary: number,
@@ -225,3 +216,29 @@ export interface CustomEmojiShortcodeMapping {
   readonly shortcode: string;
   readonly emoji: string;
 }
+
+export interface FileTreeFile {
+  readonly type: 'file';
+  readonly name: string;
+  readonly index: number;
+  reviewed: boolean;
+}
+
+export interface FileTreeRepo {
+  readonly type: 'repo';
+  readonly name: string;
+  readonly path: string;
+}
+
+export interface FileTreeFolder {
+  readonly type: 'folder';
+  readonly name: string;
+  readonly folderPath: string;
+  readonly contents: FileTreeFolderContents;
+  open: boolean;
+  reviewed: boolean;
+}
+
+export type FileTreeLeaf = FileTreeFile | FileTreeRepo;
+export type FileTreeNode = FileTreeFolder | FileTreeLeaf;
+export type FileTreeFolderContents = { [name: string]: FileTreeNode };

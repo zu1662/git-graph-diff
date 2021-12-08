@@ -1,7 +1,7 @@
 import * as GG from './type'
 import {escapeHtml} from './utils'
-const CLASS_EXTERNAL_URL = 'externalUrl';
-const CLASS_INTERNAL_URL = 'internalUrl';
+export const CLASS_EXTERNAL_URL = 'externalUrl';
+export const CLASS_INTERNAL_URL = 'internalUrl';
 
 namespace TF {
 	export const enum NodeType {
