@@ -155,8 +155,7 @@ class GitGraph {
         // this.loadMoreCommits();
       });
     }
-    document.getElementById('commitTable')!.addEventListener('click', (e: GG.CustomEvent) => {
-      console.log(e);
+    document.getElementById('commitTable')!.addEventListener('click', (e: any) => {
       if(e.path) {
         e.path.forEach((item:any) => {
           if(item.nodeName === 'TR' && item.className.includes('commit')) {
@@ -175,8 +174,7 @@ class GitGraph {
             })
           }
         })
-      }
-    });
+      }    });
   }
 
   getBranchLabels(heads: ReadonlyArray<string>, remotes: ReadonlyArray<GG.GitCommitRemote>) {
@@ -364,7 +362,7 @@ class GitGraph {
 			// 	this.changeFileViewType(GG.FileViewType.List);
 			// });
 
-      document.getElementById('cdvFiles')!.addEventListener('click', (e: GG.CustomEvent) => {
+      document.getElementById('cdvFiles')!.addEventListener('click', (e: any) => {
         if(e.path) {
           e.path.forEach(async (item: any) => {
             if(item.nodeName === 'SPAN' && item.className.includes('gitDiffPossible')) {

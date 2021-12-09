@@ -7,16 +7,21 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 const tsPlugin = tsComplier({
   tsconfig: path.resolve(__dirname, './tsconfig.json'), // 导入本地ts配置
   include: ['src/*.ts'],
+  abortOnError: false
 })
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    // tsPlugin,
+    tsPlugin,
     viteStaticCopy({
       targets: [
         {
           src: 'package.json',
+          dest: '.'
+        },
+        {
+          src: 'README.md',
           dest: '.'
         }
       ]

@@ -314,6 +314,13 @@ ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://dolphin-dev.kedacom.com/ty-knpm/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha1-gE5voeS5xSiFAd2d/1anoJQNINY=
+  dependencies:
+    follow-redirects "^1.14.4"
+
 browserslist@^4.17.5:
   version "4.18.1"
   resolved "https://registry.npmmirror.com/browserslist/download/browserslist-4.18.1.tgz?cache=0&sync_timestamp=1636994462878&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fbrowserslist%2Fdownload%2Fbrowserslist-4.18.1.tgz#60d3920f25b6860eb917c6c7b185576f4d8b017f"
@@ -518,6 +525,11 @@ estree-walker@^2.0.1:
   version "2.0.2"
   resolved "https://registry.nlark.com/estree-walker/download/estree-walker-2.0.2.tgz#52f010178c2a4c117a7757cfe942adb7d2da4cac"
   integrity sha1-UvAQF4wqTBF6d1fP6UKtt9LaTKw=
+
+follow-redirects@^1.14.4:
+  version "1.14.6"
+  resolved "https://dolphin-dev.kedacom.com/ty-knpm/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
+  integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
 
 fsevents@~2.3.2:
   version "2.3.2"

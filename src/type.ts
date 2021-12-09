@@ -3,8 +3,8 @@ export type GitRepoSet = {
 };
 
 
-export interface CustomEvent extends MouseEvent {
-  path: HTMLElement[]
+export interface CustomEvent extends EventTarget {
+  closest: any
 }
 
 export enum RepoCommitOrdering {
