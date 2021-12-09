@@ -11,7 +11,6 @@ import 'git-graph-diff/style.css'
 
 class GitGraph extends React.Component<IProps> {
   state = {
-    gitRepos: 'D:/Electron Gui/KGUI',
     gitGraph: null
   }
   componentDidMount() {
