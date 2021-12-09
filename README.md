@@ -1,1 +1,1 @@
-# Learn Vite and React + TS
+# Git Graph Diff Component
