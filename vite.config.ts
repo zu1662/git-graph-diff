@@ -1,14 +1,35 @@
+import path from 'path'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import tsComplier from 'rollup-plugin-typescript2'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+
+// ts
+const tsPlugin = tsComplier({
+  tsconfig: path.resolve(__dirname, './tsconfig.json'), // 导入本地ts配置
+  include: ['src/*.ts'],
+})
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3005, // 你需要定义的端口号
-    open: true, // open支持boolean/string类型，为true时打开默认浏览器，为string类型时，打开指定浏览器，具体查看官网即可
-    proxy: { // 配置本地代理地址
-      '/api': 'http://127.0.0.1:3000'
-    }
- }
+  plugins: [
+    // tsPlugin,
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'package.json',
+          dest: '.'
+        }
+      ]
+    })
+  ],
+  build: {
+    cssCodeSplit: false,
+    outDir: 'dist',
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'GItGraph',
+      formats: ['es'],
+      fileName: () => `index.js`,
+    },
+  },
 })

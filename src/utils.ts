@@ -102,7 +102,7 @@ export const initialState = {
 	config: {
 		dateFormat: {
 			type: GG.DateFormatType.DateAndTime,
-			iso: false
+			iso: true
 		},
 		referenceLabels: {
 			branchLabelsAlignedToGraph: true,
@@ -553,7 +553,7 @@ export function alterClass(elem: HTMLElement, className: string, state: boolean)
  * @param state TRUE => Ensure all HTML Elements have the class name, FALSE => Ensure no HTML Elements have the class name
  */
 export function alterClassOfCollection(elems: HTMLCollectionOf<HTMLElement>, className: string, state: boolean) {
-	const lockedElems = [];
+	let lockedElems = [];
 	for (let i = 0; i < elems.length; i++) {
 		lockedElems.push(elems[i]);
 	}

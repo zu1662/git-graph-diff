@@ -1,20 +1,31 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
-    "skipLibCheck": false,
+    "baseUrl": ".",
+    "outDir": "./dist", // 输出目录
+    "sourceMap": false, // 是否生成sourceMap
+    "target": "esnext", // 编译目标
+    "module": "esnext", // 模块类型
+    "moduleResolution": "node",
+    "allowJs": false, // 是否编辑js文件
+    "strict": false, // 严格模式
+    "noUnusedLocals": false, // 未使用变量报错
+    "experimentalDecorators": false, // 启动装饰器
+    "resolveJsonModule": false, // 加载json
     "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "removeComments": false, // 删除注释
+    "noUnusedParameters":false,
+    "strictFunctionTypes": false,
+
+
+    "declaration": true, // 生成定义文件
+    "declarationMap": false, // 生成定义sourceMap
+    "declarationDir": "./dist", // 定义文件输出目录
+
+
+    "lib": ["esnext", "dom"], // 导入库类型定义
+    "types": ["node"] // 导入指定类型包
   },
-  "include": ["./src"]
+  "include": [
+    "src/*" // 导入目录
+  ]
 }

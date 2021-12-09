@@ -1,70 +1,49 @@
-import axios from "axios";
-import React, { Children } from "react";
 import { Graph } from './graph'
 import * as GG from './type'
-import './base.css'
-import './index.css'
-import {createFileTree, findCommitElemWithId, getCommitElems, observeElemScroll, alterClass, UNCOMMITTED, SVG_ICONS, insertAfter, formatLongDate, formatShortDate, escapeHtml, abbrevCommit, generateSignatureHtml, generateFileViewHtml, CLASS_COMMIT_DETAILS_OPEN } from './utils'
+import {createFileTree, findCommitElemWithId, getCommitElems, observeElemScroll, alterClass, UNCOMMITTED, SVG_ICONS, insertAfter, formatLongDate, formatShortDate, escapeHtml, abbrevCommit, generateSignatureHtml, generateFileViewHtml } from './utils'
 import { TextFormatter,CLASS_INTERNAL_URL,CLASS_EXTERNAL_URL } from "./textFormatter";
+import diff2Html from './diff2Html'
+diff2Html.setConfig('drawFileList', false)
 
-interface IProps { }
+import './style/main.css'
 
-class GitGraph extends React.Component<IProps> {
-  graph: Graph | null = null
-  tableElem: HTMLElement | null = null
-  footerElem: HTMLElement | null = null
-  viewElem: HTMLElement | null = null
-  commitHead: string = ''
-  commitLookup: any = {}
-  gitBranchHead: string = 'master'
-  renderedGitBranchHead: string = ''
-  moreCommitsAvailable: boolean = false
-  config = {
-    graph: {
-      colours: ['#0085d9', '#d9008f', '#00d90a', '#d98500', '#a300d9', '#ff0000', '#00d9cc', '#e138e8', '#85d900', '#dc5b23', '#6f24d6', '#ffcc00'],
-      style: GG.GraphStyle.Rounded,
-      grid: { x: 16, y: 24, offsetX: 16, offsetY: 45, expandY: 250 },
-      uncommittedChanges: GG.GraphUncommittedChangesStyle.OpenCircleAtTheUncommittedChanges
-    },
-    mute: {
-      commitsNotAncestorsOfHead: true,
-      mergeCommits: true
-    },
-    defaultColumnVisibility: {
-      author: true,
-      commit: true,
-      date: true
-    },
-    dateFormat: {
-      type: GG.DateFormatType.DateAndTime,
-      iso: true
-    },
-    referenceLabels: {
-      branchLabelsAlignedToGraph: false,
-      combineLocalAndRemoteBranchLabels: true,
-      tagLabelsOnRight: false
-    },
-    markdown: false,
-    fetchAvatars: false
+class GitGraph {
+  graph: Graph | null
+  tableElem: HTMLElement | null 
+  footerElem: HTMLElement | null
+  viewElem: HTMLElement | null 
+  commitHead: string
+  commitLookup: any
+  gitBranchHead: string 
+  moreCommitsAvailable: boolean 
+  expandHeight:number 
+  config: GG.GitGraphConfig
+  commits: any
+  onlyFollowFirstParent: boolean
+  expandedCommit: GG.ExpandedCommit | null 
+  fileViewType: GG.FileViewType
+  commitClickCallback: (commitHash:string, next: (detailCM: GG.GitCommitDetails) => void) => void
+  fileDiffCallback: (hash:string, file: string, next: (diffStr: string) => void) => void
+  constructor(opts: GG.GitGraphState){
+    const defaultOpts = Object.assign(GG.GitGraphStateDefault, opts)
+    this.commitClickCallback = opts.commitClickCallback
+    this.fileDiffCallback = opts.fileDiffCallback
+    this.tableElem = defaultOpts.tableElem
+    this.footerElem = defaultOpts.footerElem
+    this.viewElem = defaultOpts.viewElem
+    this.commitHead = defaultOpts.commitHead
+    this.gitBranchHead = defaultOpts.gitBranchHead
+    this.moreCommitsAvailable = defaultOpts.moreCommitsAvailable
+    this.expandHeight = defaultOpts.expandHeight
+    this.config = defaultOpts.config
+    this.onlyFollowFirstParent = defaultOpts.onlyFollowFirstParent
+    this.expandedCommit = defaultOpts.expandedCommit
+    this.fileViewType = defaultOpts.fileViewType
+    this.graph = new Graph('commitGraph', this.viewElem!, this.config.graph, this.config.mute);
   }
-  commits: any = []
-  onlyFollowFirstParent = false
-  expandedCommit: GG.ExpandedCommit | null = null
-  fileViewType: GG.FileViewType = GG.FileViewType.Default
-  state = {
-    gitRepos: 'D:/Electron Gui/KGUI',
-  }
-  componentDidMount() {
-    this.tableElem = document.getElementById('commitTable')
-    this.footerElem = document.getElementById('footer')
-    this.viewElem = document.getElementById('viewBox')
-    const viewElm = document.getElementById('viewBox')
-    this.graph = new Graph('commitGraph', viewElm!, this.config.graph, this.config.mute);
-    axios.get('/api/commits').then(res => {
-      const result = res.data
-      this.moreCommitsAvailable = result.moreCommitsAvailable
-      this.loadCommits(result.commits, result.head, result.tags, result.moreCommitsAvailable, false)
-    })
+
+  updateConfig<T extends keyof GitGraph>(key:T, value: any){
+    this[key] =value
   }
 
   loadCommits(commits: GG.GitCommit[], commitHead: string, tags: ReadonlyArray<string>, moreAvailable: boolean, onlyFollowFirstParent: boolean) {
@@ -84,9 +63,9 @@ class GitGraph extends React.Component<IProps> {
     this.renderTable();
   }
 
-  renderGraph() {
+  renderGraph(renderHeight?: number) {
     const colHeadersElem = document.getElementById('tableColHeaders');
-		const cdvHeight = 250;
+		const cdvHeight = renderHeight ? renderHeight : 0;
 		const headerHeight = colHeadersElem !== null ? colHeadersElem.clientHeight + 1 : 0;
 		const expandedCommit = this.expandedCommit;
 		const expandedCommitElem = expandedCommit !== null ? document.getElementById('cdv') : null;
@@ -103,7 +82,7 @@ class GitGraph extends React.Component<IProps> {
 		this.graph?.render(expandedCommit);
 	}
   renderTable() {
-    const colVisibility = this.config.defaultColumnVisibility;
+    const colVisibility = this.config.columnVisibility;
     const currentHash = this.commits.length > 0 && this.commits[0].hash === UNCOMMITTED ? UNCOMMITTED : this.commitHead;
     const vertexColours = this.graph?.getVertexColours() || [];
     const widthsAtVertices = this.config.referenceLabels.branchLabelsAlignedToGraph ? this.graph?.getWidthsAtVertices() : [];
@@ -170,32 +149,35 @@ class GitGraph extends React.Component<IProps> {
     }
     this.tableElem!.innerHTML = '<table id="commitTable">' + html + '</table>';
     this.footerElem!.innerHTML = this.moreCommitsAvailable ? '<div id="loadMoreCommitsBtn" class="roundedBtn">Load More Commits</div>' : '';
-    this.renderedGitBranchHead = this.gitBranchHead;
 
     if (this.moreCommitsAvailable) {
       document.getElementById('loadMoreCommitsBtn')!.addEventListener('click', () => {
         // this.loadMoreCommits();
       });
     }
-    document.getElementById('commitTable')!.addEventListener('click', (e:any) => {
+    document.getElementById('commitTable')!.addEventListener('click', (e: GG.CustomEvent) => {
+      console.log(e);
       if(e.path) {
-        e.path.forEach(item => {
+        e.path.forEach((item:any) => {
           if(item.nodeName === 'TR' && item.className.includes('commit')) {
             const commitId = item.dataset.id
             const commitHash = item.dataset.hash
-            console.log(commitId, commitHash);
-            // 先删除之前的cdv
+
             const cdvDOM = document.getElementById('cdv')
-            if(cdvDOM != null) {
-              cdvDOM.remove()
+            if(item.nextSibling === cdvDOM) {
+              cdvDOM?.remove()
+              this.renderGraph()
+              return
             }
-            this.renderCommitDetailsView(commitId, commitHash)
+            // 回调 commit 点击事件
+            this.commitClickCallback(commitHash, (detailCM: GG.GitCommitDetails) => { 
+              this.renderCommitDetailsView(commitId, commitHash, detailCM)
+            })
           }
         })
       }
     });
   }
-
 
   getBranchLabels(heads: ReadonlyArray<string>, remotes: ReadonlyArray<GG.GitCommitRemote>) {
     let headLabels: { name: string; remotes: string[] }[] = [], headLookup: { [name: string]: number } = {}, remoteLabels: ReadonlyArray<GG.GitCommitRemote>;
@@ -244,17 +226,16 @@ class GitGraph extends React.Component<IProps> {
 	}
 
   // 提交详情
-  async renderCommitDetailsView(index:number, hash:string) {
+  async renderCommitDetailsView(index:number, hash:string, detailCM: GG.GitCommitDetails) {
     const commitElems = getCommitElems();
     const commitElem = findCommitElemWithId(commitElems, index);
-    const result = await axios.get('/api/detail', {params: {hash}})
-		const expandedCommit = {
+		let expandedCommit = {
 			index: index,
 			commitHash: hash,
 			commitElem: commitElem,
-			commitDetails: result.data.commitDetails,
-			fileChanges: result.data.commitDetails.fileChanges,
-			fileTree: createFileTree(result.data.commitDetails.fileChanges, null),
+			commitDetails: detailCM,
+			fileChanges: detailCM.fileChanges,
+			fileTree: createFileTree(detailCM.fileChanges, null),
 			avatar: null,
 			codeReview: null,
 			lastViewedFile: null,
@@ -278,7 +259,7 @@ class GitGraph extends React.Component<IProps> {
 			elem = document.createElement('tr');
 			elem.id = 'cdv';
 			elem.className = 'inline';
-      elem.style.height = '250px'
+      elem.dataset.hash = expandedCommit.commitHash
 			insertAfter(elem, expandedCommit.commitElem);
 		}
 
@@ -323,14 +304,15 @@ class GitGraph extends React.Component<IProps> {
 			html += '</div><div id="cdvFiles"' + (expandedCommit.showSummary ?  '' : ' style="left:0"') + ' >' + generateFileViewHtml(expandedCommit.fileTree!, expandedCommit.fileChanges!, expandedCommit.lastViewedFile, expandedCommit.contextMenuOpen.fileView, this.getFileViewType(), commitOrder.to === UNCOMMITTED);
 		}
 		html += '</div><div id="cdvControls" style="right: 15px"><div id="cdvClose" class="cdvControlBtn" title="Close">' + SVG_ICONS.close + '</div>' +
-			(!expandedCommit.loading ? '<div id="cdvFileViewTypeTree" class="cdvControlBtn cdvFileViewTypeBtn" title="File Tree View">' + SVG_ICONS.fileTree + '</div><div id="cdvFileViewTypeList" class="cdvControlBtn cdvFileViewTypeBtn" title="File List View">' + SVG_ICONS.fileList + '</div>' : '') +
-			'</div><div class="cdvHeightResize"></div>';
+			// (!expandedCommit.loading ? '<div id="cdvFileViewTypeTree" class="cdvControlBtn cdvFileViewTypeBtn" title="File Tree View">' + SVG_ICONS.fileTree + '</div><div id="cdvFileViewTypeList" class="cdvControlBtn cdvFileViewTypeBtn" title="File List View">' + SVG_ICONS.fileList + '</div>' : '') +
+			'</div>';
 
-		elem.innerHTML = '<td><div class="cdvHeightResize"></div></td><td colspan="' + 4 + '">' + html + '</td>';
-		this.renderGraph();
+		elem.innerHTML = '<td></td><td colspan="' + 4 + '">' + html + '</td>';
+    const renderHeight = elem.clientHeight
+		this.renderGraph(renderHeight);
 
     let elemTop = commitElem?.offsetTop || 0;
-		let cdvHeight = 250;
+		let cdvHeight = renderHeight;
     const autoCenter = true
     if (autoCenter) {
       // Center Commit Detail View setting is enabled
@@ -349,6 +331,7 @@ class GitGraph extends React.Component<IProps> {
 		document.getElementById('cdvClose')!.addEventListener('click', () => {
 			const cdvDOM = document.getElementById('cdv')
       if(cdvDOM) cdvDOM.remove()
+      this.renderGraph()
 		});
 
 		if (!expandedCommit.loading) {
@@ -373,15 +356,51 @@ class GitGraph extends React.Component<IProps> {
 				}
 			}, () => {});
 
-			document.getElementById('cdvFileViewTypeTree')!.addEventListener('click', () => {
-				this.changeFileViewType(GG.FileViewType.Tree);
-			});
+			// document.getElementById('cdvFileViewTypeTree')!.addEventListener('click', () => {
+			// 	this.changeFileViewType(GG.FileViewType.Tree);
+			// });
 
-			document.getElementById('cdvFileViewTypeList')!.addEventListener('click', () => {
-				this.changeFileViewType(GG.FileViewType.List);
-			});
+			// document.getElementById('cdvFileViewTypeList')!.addEventListener('click', () => {
+			// 	this.changeFileViewType(GG.FileViewType.List);
+			// });
+
+      document.getElementById('cdvFiles')!.addEventListener('click', (e: GG.CustomEvent) => {
+        if(e.path) {
+          e.path.forEach(async (item: any) => {
+            if(item.nodeName === 'SPAN' && item.className.includes('gitDiffPossible')) {
+              const pathName = item.getElementsByClassName('gitFileName')[0]
+              const filePath = pathName.innerText
+              const hash = item.closest('#cdv')?.dataset.hash
+              const liDom = item.closest('li')
+              this.renderDiffHtml(hash,filePath,liDom, elem!)
+            }
+          })
+        }
+      });
 		}
 	}
+
+  async renderDiffHtml(hash:string, filePath:string, liDom: HTMLElement, cdvDom:HTMLElement){
+    let diffDom = document.getElementById('diffDom')
+    if(liDom.nextSibling === diffDom) {
+      // 相等说明已展开，关闭掉
+      diffDom?.remove()
+      this.renderGraph(cdvDom.clientHeight)
+      return
+    }
+    this.fileDiffCallback(hash, filePath, (diffStr:string) => {
+      const outHtml = diff2Html.Parse2Html(diffStr)
+      if(diffDom === null) {
+        diffDom =  document.createElement('section');
+        diffDom.id = 'diffDom';
+      }
+      diffDom.innerHTML = outHtml
+      insertAfter(diffDom, liDom)
+      this.renderGraph(cdvDom.clientHeight)
+    })
+    
+    
+  }
 
   getCommitId(hash: string) {
 		return typeof this.commitLookup[hash] === 'number' ? this.commitLookup[hash] : null;
@@ -396,18 +415,6 @@ class GitGraph extends React.Component<IProps> {
 		this.renderCdvFileViewTypeBtns();
 	}
 
-  render() {
-    return (
-      <div id="viewBox">
-        <div id="content">
-          <div id="commitGraph"></div>
-          <div id="commitTable"></div>
-        </div>
-        <div id="footer"></div>
-      </div>
-    )
-  }
 }
-
 
 export default GitGraph

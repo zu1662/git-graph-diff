@@ -1,6 +1,12 @@
 export type GitRepoSet = {
   [repo: string]: GitRepoState;
 };
+
+
+export interface CustomEvent extends MouseEvent {
+  path: HTMLElement[]
+}
+
 export enum RepoCommitOrdering {
   Default = 'default',
   Date = 'date',
@@ -17,6 +23,37 @@ export enum BooleanOverride {
   Enabled = 1,
   Disabled = 2
 }
+
+export enum RepoDropdownOrder {
+  FullPath = 0,
+  Name = 1,
+  WorkspaceFullPath = 2
+}
+
+export interface DateFormat {
+  readonly type: DateFormatType;
+  readonly iso: boolean;
+}
+export enum DateFormatType {
+  DateAndTime = 0,
+  DateOnly = 1,
+  Relative = 2
+}
+
+export enum GraphStyle {
+  Rounded = 0,
+  Angular = 1
+}
+
+export enum GraphUncommittedChangesStyle {
+  OpenCircleAtTheUncommittedChanges = 0,
+  OpenCircleAtTheCheckedOutCommit = 1
+}
+export interface ReferenceLabelsConfig {
+	branchLabelsAlignedToGraph: boolean;
+	combineLocalAndRemoteBranchLabels: boolean;
+	tagLabelsOnRight: boolean;
+}
 export interface IssueLinkingConfig {
   readonly issue: string;
   readonly url: string;
@@ -26,6 +63,79 @@ export enum PullRequestProvider {
   Custom = 1,
   GitHub = 2,
   GitLab = 3
+}
+
+export interface GitGraphConfig {
+  graph: GraphConfig
+  mute: MuteCommitsConfig
+  columnVisibility: {
+    author: boolean
+    commit: boolean
+    date: boolean
+  }
+  dateFormat: DateFormat
+  referenceLabels:ReferenceLabelsConfig
+  markdown:boolean
+}
+
+export interface GitGraphState {
+  tableElem: HTMLElement | null 
+  footerElem: HTMLElement | null
+  viewElem: HTMLElement | null 
+  commitHead?: string
+  commitLookup?: any
+  gitBranchHead?: string 
+  moreCommitsAvailable?: boolean 
+  expandHeight?:number 
+  config?: GitGraphConfig
+  commits?: any 
+  onlyFollowFirstParent?: boolean
+  expandedCommit?: ExpandedCommit | null 
+  fileViewType?: FileViewType
+  commitClickCallback: (commitHash:string, next: (detailCM:GitCommitDetails) => void) => void
+  fileDiffCallback: (hash:string, file: string, next: (diffStr: string) => void) => void
+}
+export const GitGraphStateDefault = {
+  graph: null,
+  tableElem: null,
+  footerElem: null,
+  viewElem: null,
+  commitHead: '',
+  commitLookup: {},
+  gitBranchHead: 'master',
+  moreCommitsAvailable: false,
+  expandHeight: 250,
+  config: {
+    graph: {
+      colours: ['#0085d9', '#d9008f', '#00d90a', '#d98500', '#a300d9', '#ff0000', '#00d9cc', '#e138e8', '#85d900', '#dc5b23', '#6f24d6', '#ffcc00'],
+      style: GraphStyle.Rounded,
+      grid: { x: 16, y: 24, offsetX: 16, offsetY: 45, expandY: 250 },
+      uncommittedChanges: GraphUncommittedChangesStyle.OpenCircleAtTheUncommittedChanges
+    },
+    mute: {
+      commitsNotAncestorsOfHead: true,
+      mergeCommits: true
+    },
+    columnVisibility: {
+      author: true,
+      commit: true,
+      date: true
+    },
+    dateFormat: {
+      type: DateFormatType.DateAndTime,
+      iso: true
+    },
+    referenceLabels: {
+      branchLabelsAlignedToGraph: false,
+      combineLocalAndRemoteBranchLabels: true,
+      tagLabelsOnRight: false
+    },
+    markdown: false,
+  },
+  commits: [],
+  onlyFollowFirstParent:false,
+  expandedCommit: null,
+  fileViewType: FileViewType.Default,
 }
 export interface PullRequestConfig {
   readonly hostRootUrl: string;
@@ -65,31 +175,7 @@ export interface GitRepoState {
   workspaceFolderIndex: number | null;
 }
 
-export enum RepoDropdownOrder {
-  FullPath = 0,
-  Name = 1,
-  WorkspaceFullPath = 2
-}
 
-export interface DateFormat {
-  readonly type: DateFormatType;
-  readonly iso: boolean;
-}
-export enum DateFormatType {
-  DateAndTime = 0,
-  DateOnly = 1,
-  Relative = 2
-}
-
-export enum GraphStyle {
-  Rounded = 0,
-  Angular = 1
-}
-
-export enum GraphUncommittedChangesStyle {
-  OpenCircleAtTheUncommittedChanges = 0,
-  OpenCircleAtTheCheckedOutCommit = 1
-}
 
 export interface GraphConfig {
   readonly colours: ReadonlyArray<string>;

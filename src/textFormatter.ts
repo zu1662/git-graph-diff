@@ -562,7 +562,7 @@ export class TextFormatter {
  * @param elem The element to check.
  * @returns TRUE => The element is an external or internal URL, FALSE => The element isn't an external or internal URL
  */
-function isUrlElem(elem: Element) {
+export function isUrlElem(elem: Element) {
 	return elem.classList.contains(CLASS_EXTERNAL_URL) || elem.classList.contains(CLASS_INTERNAL_URL);
 }
 
@@ -571,7 +571,7 @@ function isUrlElem(elem: Element) {
  * @param elem The element to check.
  * @returns TRUE => The element is an external URL, FALSE => The element isn't an external URL
  */
-function isExternalUrlElem(elem: Element) {
+ export function isExternalUrlElem(elem: Element) {
 	return elem.classList.contains(CLASS_EXTERNAL_URL);
 }
 
@@ -580,7 +580,7 @@ function isExternalUrlElem(elem: Element) {
  * @param elem The element to check.
  * @returns TRUE => The element is an internal URL, FALSE => The element isn't an internal URL
  */
-function isInternalUrlElem(elem: Element) {
+ export function isInternalUrlElem(elem: Element) {
 	return elem.classList.contains(CLASS_INTERNAL_URL);
 }
 

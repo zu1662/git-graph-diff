@@ -1,24 +1,9 @@
 /* Body */
-body{
-	display:block;
-	position:fixed;
-	top:0;
-	left:0;
-	right:0;
-	bottom:0;
-	margin:0;
-	padding:0;
-}
-body.unableToLoad{
-	margin:0 20px;
-}
-body.unableToLoad h2, body.unableToLoad h3, body.unableToLoad p{
-	text-align:center;
-}
+@import url(./base.css);
 
 body #viewBox{
 	display:block;
-	position:fixed;
+	position:absolute;
 	top:0;
 	left:0;
 	right:0;
@@ -298,7 +283,7 @@ code{
 #cdv.inline{
 	vertical-align:top;
 }
-#cdv.inline td{
+#cdv.inline > td{
 	background-color:rgba(128,128,128,0.1);
 	position:relative;
 	font-size:13px;
@@ -382,7 +367,11 @@ code{
 	fill-opacity:0.9;
 }
 
-#cdvSummary, #cdvFiles, #cdvLoading{
+#cdvFiles {
+	position: relative;
+}
+
+#cdvSummary, #cdvLoading{
 	position:absolute;
 	top:0;
 	bottom:0;
@@ -1019,4 +1008,13 @@ label > input[type=radio]:checked ~ .customRadio:after{
 #commitGraph, #commitTable th, #commitTable td, .gitRef, #loadingHeader, .unselectable, .roundedBtn, #controls label{
 	-webkit-user-select:none;
 	user-select:none;
+}
+
+/* DiffHtml */
+#cdv .d2h-diff-table {
+	background-color: #fff;
+}
+#cdv .d2h-diff-table td{
+ padding: 0;
+ line-height: 20px;
 }
